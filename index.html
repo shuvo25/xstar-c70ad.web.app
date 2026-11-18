@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSTAR Stream</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Adsterra Social Bar Script -->
+    <script data-cfasync="false" src="https://czernik.org/14/af6ef198ba9e6dff12caf099f10d1c69"></script>
+
+    <!-- Adsterra Native Banner Script -->
+    <script async="async" data-cfasync="false" src="https://czernik.org/21/1830e2d4c289f0c82507474c6b99913b"></script>
+
+    <!-- Adsterra Popunder Script -->
+    <script data-cfasync="false" src="https://capitalhospitals.org/1/2eeb5ebb995be7775028c58be44b3b01"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #08080c;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Sticky Header Bar */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: rgba(16, 16, 22, 0.96);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .menu-btn {
+            font-size: 20px;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 4px;
+        }
+        
+        /* 3D X + STAR Logo Badge */
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .logo-icon-3d {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #2b2c3a, #101118);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                0 6px 14px rgba(0, 0, 0, 0.95),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.25),
+                inset -2px -2px 5px rgba(0, 0, 0, 0.9);
+            border: 1px solid #3e4054;
+        }
+        .logo-icon-3d svg {
+            width: 26px;
+            height: 26px;
+            filter: drop-shadow(0px 4px 6px rgba(255, 102, 0, 0.85));
+        }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .icon-btn {
+            font-size: 18px;
+            color: #e1e1e1;
+            cursor: pointer;
+            position: relative;
+            padding: 4px;
+        }
+
+        /* Professional Login Button (Smartlink) */
+        .pro-login-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff5500, #ff2200);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 85, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+        }
+
+        /* Search Bar */
+        .search-bar-container {
+            display: none;
+            padding: 10px 16px;
+            background: #12121a;
+            border-bottom: 1px solid #252535;
+        }
+        .search-input-box {
+            display: flex;
+            align-items: center;
+            background: #1c1c28;
+            border-radius: 20px;
+            padding: 6px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .search-input-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        /* Category Filter Chips */
+        .category-bar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 16px;
+            overflow-x: auto;
+            background: #0d0d14;
+            white-space: nowrap;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-chip {
+            background: #1a1a26;
+            color: #ccc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .cat-chip.active {
+            background: #ff5500;
+            color: #fff;
+            border-color: #ff5500;
+            box-shadow: 0 2px 8px rgba(255, 85, 0, 0.4);
+        }
+
+        /* Main Container Layout */
+        .main-container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pages View Control */
+        .page-view {
+            display: none;
+        }
+        .page-view.active {
+            display: block;
+        }
+
+        /* Video Feed & Cards */
+        .video-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .video-card {
+            background: #12121a;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s;
+        }
+        .thumbnail-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1c1c28;
+            position: relative;
+        }
+        .thumbnail-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .video-details {
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+        }
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ff5500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .video-meta h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .video-meta p {
+            font-size: 12px;
+            color: #888899;
+        }
+
+        /* Ad Box Styling */
+        .ad-box {
+            background: #12121a;
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        /* Video Player Page Specific Style */
+        .player-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .player-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+        .player-info-box {
+            padding: 16px 0;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+        }
+        .back-to-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1c1c28;
+            color: #ff5500;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 85, 0, 0.3);
+        }
+        .related-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        /* Side Menu Drawer */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 270px;
+            height: 100%;
+            background: #12121a;
+            z-index: 300;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.8);
+            transition: left 0.3s ease;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .side-menu.open {
+            left: 0;
+        }
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #222232;
+            margin-bottom: 15px;
+        }
+        .menu-item-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .menu-item-list li {
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #ddd;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .menu-item-list li:hover {
+            background: rgba(255, 85, 0, 0.15);
+            color: #ff5500;
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 250;
+            display: none;
+        }
+
+        /* Toast Popup */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff5500;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: none;
+            z-index: 400;
+            box-shadow: 0 4px 12px rgba(255, 85, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Bar -->
+    <header class="header">
+        <div class="header-left">
+            <i class="fa-solid fa-ellipsis-vertical menu-btn" onclick="toggleSideMenu()"></i>
+            <div class="logo-box" onclick="goHome()">
+                <div class="logo-icon-3d">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="starG" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FF9900"/>
+                                <stop offset="100%" stop-color="#FF3300"/>
+                            </linearGradient>
+                            <linearGradient id="xG" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FFD700"/>
+                                <stop offset="100%" stop-color="#FF5500"/>
+                            </linearGradient>
+                        </defs>
+                        <polygon points="50,4 63,34 96,37 71,59 78,92 50,74 22,92 29,59 4,37 37,34" fill="url(#starG)"/>
+                        <path d="M22 22 L78 78 M78 22 L22 78" stroke="url(#xG)" stroke-width="18" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="logo-text">XSTAR</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <i class="fa-solid fa-magnifying-glass icon-btn" onclick="toggleSearch()"></i>
+            <a href="https://budgetezy.org/4/9aadcfcc9f7709bf96a492763d55c9ed" target="_blank" class="pro-login-btn">
+                <i class="fa-solid fa-user-lock"></i>
+                <span>Login</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Search Box Overlay -->
+    <div class="search-bar-container" id="searchBox">
+        <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass" style="color:#aaa;"></i>
+            <input type="text" placeholder="Search videos, channels..." id="searchInput" onkeypress="handleSearch(event)">
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-bar" id="categoryBar">
+        <span class="cat-chip active" onclick="selectCat(this, 'All')">All</span>
+        <span class="cat-chip" onclick="selectCat(this, 'Recommend')">Recommend</span>
+        <span class="cat-chip" onclick="selectCat(this, 'Related')">Related</span>
+        <span class="cat-chip" onclick="selectCat(this, 'HD')">HD</span>
+        <span class="cat-chip" onclick="selectCat(this, 'Full HD')">Full HD</span>
+        <span class="cat-chip" onclick="selectCat(this, 'Exclusive')">Exclusive</span>
+    </div>
+
+    <!-- Side Drawer Menu -->
+    <div class="backdrop" id="backdrop" onclick="toggleSideMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h3 style="color:#fff;">XSTAR Menu</h3>
+            <i class="fa-solid fa-xmark" style="color:#aaa; cursor:pointer; font-size:20px;" onclick="toggleSideMenu()"></i>
+        </div>
+        <ul class="menu-item-list">
+            <li onclick="toggleSideMenu(); goHome()"><i class="fa-solid fa-house"></i> Home Feed</li>
+            <li onclick="toggleSideMenu(); showSearchHistory()"><i class="fa-solid fa-clock-rotate-left"></i> Search History</li>
+            <li onclick="toggleSideMenu(); showWatchHistory()"><i class="fa-solid fa-video"></i> Watch History</li>
+            <li onclick="toggleSideMenu(); downloadApp()"><i class="fa-solid fa-cloud-arrow-down"></i> Install App (Download)</li>
+        </ul>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        
+        <!-- ================= PAGE 1: HOME PAGE ================= -->
+        <div id="homePage" class="page-view active">
+            <div class="video-feed" id="homeVideoFeed">
+                <!-- Dynamically populated from JS array -->
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: PLAYER PAGE ================= -->
+        <div id="playerPage" class="page-view">
+            <div class="back-to-home-btn" onclick="goHome()">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </div>
+            
+            <div class="player-wrapper">
+                <video id="nativeVideoPlayer" controls playsinline preload="auto">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="player-info-box">
+                <h2 id="playerTitle" style="font-size: 16px; margin-bottom: 6px; color: #fff;">Stream Title</h2>
+                <p style="font-size: 12px; color: #888899; margin-bottom: 14px;">Streaming via XSTAR Multi-Page Core</p>
+                
+                <div class="ad-box">
+                    <script>
+                      var atOptions = {
+                        'key' : '2e3d20a07639f661c1593b4c267d65ab',
+                        'format' : 'iframe',
+                        'height' : 90,
+                        'width' : 728,
+                        'params' : {}
+                      };
+                    </script>
+                    <script src="https://czernik.org/22/2e3d20a07639f661c1593b4c267d65ab.js"></script>
+                </div>
+            </div>
+
+            <!-- YouTube Style: Related Videos Feed under Player -->
+            <div class="related-section-title">Related Videos</div>
+            <div class="video-feed" id="relatedVideoFeed">
+                <!-- Dynamically populated excluding current playing video -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Popup Notification -->
+    <div class="toast-msg" id="toast">Action Activated</div>
+
+    <!-- Firebase SDK & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration[span_0](start_span)[span_0](end_span)
+        const firebaseConfig = {
+          apiKey: "AIzaSy8_ja-97JUwukgES9qbJz9c1lXjDwqcURU",
+          authDomain: "xstar-c70ad.firebaseapp.com",
+          projectId: "xstar-c70ad",
+          storageBucket: "xstar-c70ad.appspot.com",
+          messagingSenderId: "872181658680",
+          appId: "1:872181658680:web:dec248a1b356c23c2ee2cd"
+        };
+
+        // Initialize Firebase[span_1](start_span)[span_1](end_span)
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        console.log("Firebase initialized successfully for XSTAR!");
+    </script>
+
+    <script>
+        // Master list of all 12 videos with their exact links and thumbnails
+        var allVideos = [
+            {
+                url: "https://ia903105.us.archive.org/9/items/busty-brunette-executive-seals-the-deal-with-a-huge-cock/Busty_Brunette_Executive_Seals_the_Deal_with_a_Huge_Cock.mp4",
+                title: "Busty Brunette Executive Seals the Deal with a Huge Cock",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/OGFjODhhNmFjZDk3ZjE5ZGRhNGY0YjA2ZTFhNTBhNjk/s(w:1280,h:720),webp/029/439/952/v2/2560x1440.206.webp",
+                views: "25K views"
+            },
+            {
+                url: "https://ia600103.us.archive.org/14/items/nerdy-guy-breaks-his-big-ass-friend-s-pussy-making-her-moan-and-get-wet-with-ple/Nerdy_guy_breaks_his_big_ass_friend_s_pussy%2C_making_her_moan_and_get_wet_with_pleasure%2C_while_cheating_on_her_boyfriend.mp4",
+                title: "Nerdy guy breaks his big ass friend s pussy, making her moan and get wet with pleasure",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/NTQ4OGI4MThhZWQyOWZiNmZkZWFlY2Q4MzJhN2QzNmQ/s(w:1280,h:720),webp/030/166/140/v2/2560x1440.210.webp",
+                views: "35K views"
+            },
+            {
+                url: "https://ia601005.us.archive.org/19/items/hotel-hookup-muscular-neptune-stretches-busty-blonde-milf-lila-lovely-in-every-angle/Hotel_Hookup_Muscular_Neptune_Stretches_Busty_Blonde_MILF_Lila_Lovely_in_Every_Angle.mp4",
+                title: "Hotel Hookup Muscular Neptune Stretches Busty Blonde MILF Lila Lovely",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/MWVmOWQ4ZjNhNGU1OTkzZTFiMDRhMTQ5NzQ0YjUxY2I/s(w:1280,h:720),webp/028/503/180/v2/2560x1440.201.webp",
+                views: "42K views"
+            },
+            {
+                url: "https://ia903203.us.archive.org/24/items/i-found-the-perfect-little-latina-fuck-doll-on-the-streets-of-colombia/I_Found_the_Perfect_Little_Latina_Fuck_Doll_on_the_Streets_of_Colombia.mp4",
+                title: "I Found the Perfect Little Latina Fuck Doll on the Streets of Colombia",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/MmZiZTAwODBlODAzOTlhMmIyYjhkZDdkOTcwNzYxMzE/s(w:1280,h:720),webp/031/465/563/v2/2560x1440.215.webp",
+                views: "50K views"
+            },
+            {
+                url: "https://ia601005.us.archive.org/19/items/sexy-bbw-mom-is-fucked-by-surprise-stepson/Sexy_BBW_Mom_is_fucked_by_Surprise_Stepson.mp4",
+                title: "Sexy BBW Mom is fucked by Surprise Stepson",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/MzY1ZDJiMTUwYjA3ZjAyNjQ0Njc0ZWIzZjYxYzVhN2E/s(w:1280,h:720),webp/024/417/960/v2/2560x1440.212.webp",
+                views: "18K views"
+            },
+            {
+                url: "https://ia601007.us.archive.org/22/items/bbw-marlyn-mason-gives-a-titjob-before-getting-reamed/BBW_Marlyn_Mason_Gives_a_Titjob_Before_Getting_Reamed.mp4",
+                title: "BBW Marlyn Mason Gives a Titjob Before Getting Reamed",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/ZjRmNTJlY2UxNjQ0OWJjOWRiYTkzOTEyNWVlNTQ3ZjY/s(w:1280,h:720),webp/021/850/755/1280x720.c.jpg.v1641992640",
+                views: "29K views"
+            },
+            {
+                url: "https://ia600609.us.archive.org/34/items/wap-dealer-dante-drills-mz.-dani-mandi-may-with-bbc/Wap_Dealer_Dante_Drills_Mz._Dani___Mandi_May_with_BBC.mp4",
+                title: "Wap Dealer Dante Drills Mz. Dani Mandi May with BBC",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/YzVmNDIwMDk1ODYzMTA4OGQxNjM0ODJhYWIxODZlNmI/s(w:1280,h:720),webp/030/731/525/v2/2560x1440.225.webp",
+                views: "61K views"
+            },
+            {
+                url: "https://ia600401.us.archive.org/31/items/man-on-the-street-and-in-the-pussy-reality-kings/Man_on_the_Street_and_in_the_Pussy_Reality_Kings.mp4",
+                title: "Man on the Street and in the Pussy Reality Kings",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/NDg1NTQ1OWFjNDE3ZmFlYTZkN2RkYTVhNDhhYzAxZGM/s(w:1280,h:720),webp/026/581/048/v2/2560x1440.202.webp",
+                views: "33K views"
+            },
+            {
+                url: "https://ia600904.us.archive.org/0/items/overtitillated-extended-julianadrmz/Overtitillated_Extended_Julianadrmz.mp4",
+                title: "Overtitillated Extended Julianadrmz",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/NGVkMjRhOGE0OGVmMWFlZTY5Y2VlYWY0YjlkNTBlMDI/s(w:1280,h:720),webp/030/904/671/v2/2560x1440.215.webp",
+                views: "19K views"
+            },
+            {
+                url: "https://ia600909.us.archive.org/0/items/double-booked-with-a-big-tit-bombshell/Double_Booked_with_a_Big_Tit_Bombshell.mp4",
+                title: "Double Booked with a Big Tit Bombshell",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/YzQwMjhhYjM2Mzk2ZDQ4NGY3NmUwZWZhYTg5NzNiYTk/s(w:1280,h:720),webp/025/129/480/v2/2560x1440.207.webp",
+                views: "22K views"
+            },
+            {
+                url: "https://ia800900.us.archive.org/6/items/teacher-fucks-student-to-help-him-save-his-grades-at-school/Teacher_Fucks_Student_to_Help_Him_Save_His_Grades_at_School.mp4",
+                title: "Teacher Fucks Student to Help Him Save His Grades at School",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/ZTIyMzBhMTE0MzhkYjQyMTk4OGE0Zjk4M2YzZDY3NDU/s(w:1280,h:720),webp/031/518/921/v2/2560x1440.207.webp",
+                views: "88K views"
+            },
+            {
+                url: "https://ia601403.us.archive.org/13/items/after-college-i-end-up-fucking-my-professor-at-his-house-while-we-were-doing-a-university-project/After_College_I_End_up_Fucking_My_Professor_at_His_House_While_We_Were_Doing_a_University_Project.mp4",
+                title: "After College I End up Fucking My Professor at His House",
+                thumb: "https://ic-vt-nss.xhcdn.com/a/ODlkOTkzMDJiYWY2MmM2MjlkMThmOTg0YzNhZTgxMzY/s(w:1280,h:720),webp/028/908/551/v2/2560x1440.202.webp",
+                views: "45K views"
+            }
+        ];
+
+        var videoElement = document.getElementById("nativeVideoPlayer");
+        var homePage = document.getElementById("homePage");
+        var playerPage = document.getElementById("playerPage");
+        var categoryBar = document.getElementById("categoryBar");
+
+        function triggerAdsAndOpen(videoUrl, title) {
+            if (!sessionStorage.getItem("adOpened")) {
+                sessionStorage.setItem("adOpened", "true");
+                window.open("https://budgetezy.org/4/9aadcfcc9f7709bf96a492763d55c9ed", "_blank");
+            }
+            switchToPlayer(videoUrl, title);
+        }
+
+        function renderHomeFeed() {
+            var homeFeed = document.getElementById("homeVideoFeed");
+            homeFeed.innerHTML = "";
+
+            for (var i = 0; i < allVideos.length; i++) {
+                var video = allVideos[i];
+                var card = document.createElement("div");
+                card.className = "video-card";
+                
+                (function(vUrl, vTitle) {
+                    card.onclick = function() {
+                        triggerAdsAndOpen(vUrl, vTitle);
+                    };
+                })(video.url, video.title);
+
+                card.innerHTML = '<div class="thumbnail-container">' +
+                    '<img src="' + video.thumb + '" alt="Thumbnail">' +
+                    '<div class="video-duration">HD</div>' +
+                    '</div>' +
+                    '<div class="video-details">' +
+                    '<div class="channel-avatar">X</div>' +
+                    '<div class="video-meta">' +
+                    '<h3>' + video.title + '</h3>' +
+                    '<p>XSTAR Stream • ' + video.views + ' • Today</p>' +
+                    '</div>' +
+                    '</div>';
+                
+                homeFeed.appendChild(card);
+
+                if (i === 2) {
+                    var adDiv1 = document.createElement("div");
+                    adDiv1.className = "ad-box";
+                    adDiv1.innerHTML = '<div id="container-1830e2d4c289f0c82507474c6b99913b"></div>';
+                    homeFeed.appendChild(adDiv1);
+                } else if (i === 6) {
+                    var adDiv2 = document.createElement("div");
+                    adDiv2.className = "ad-box";
+                    adDiv2.innerHTML = '<script>var atOptions = {"key" : "1624f332fc314dd90c53dad2b0b6083d", "format" : "iframe", "height" : 250, "width" : 300, "params" : {}};<\/script><script src="https://czernik.org/22/1624f332fc314dd90c53dad2b0b6083d.js"><\/script>';
+                    homeFeed.appendChild(adDiv2);
+                }
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", function() {
+            renderHomeFeed();
+        });
+
+        function switchToPlayer(videoUrl, title) {
+            history.pushState({page: "player"}, "", "#player");
+
+            homePage.classList.remove("active");
+            categoryBar.style.display = "none";
+            playerPage.classList.add("active");
+
+            document.getElementById("playerTitle").innerText = title;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            videoElement.src = videoUrl;
+            videoElement.load();
+            videoElement.play().catch(function(e) { console.log("Auto-play prevented:", e); });
+
+            renderRelatedVideos(videoUrl);
+        }
+
+        function renderRelatedVideos(currentUrl) {
+            var relatedFeed = document.getElementById("relatedVideoFeed");
+            relatedFeed.innerHTML = "";
+
+            for (var i = 0; i < allVideos.length; i++) {
+                var video = allVideos[i];
+                if (video.url !== currentUrl) {
+                    var card = document.createElement("div");
+                    card.className = "video-card";
+                    
+                    (function(vUrl, vTitle) {
+                        card.onclick = function() {
+                            triggerAdsAndOpen(vUrl, vTitle);
+                        };
+                    })(video.url, video.title);
+
+                    card.innerHTML = '<div class="thumbnail-container">' +
+                        '<img src="' + video.thumb + '" alt="Thumbnail">' +
+                        '<div class="video-duration">HD</div>' +
+                        '</div>' +
+                        '<div class="video-details">' +
+                        '<div class="channel-avatar">X</div>' +
+                        '<div class="video-meta">' +
+                        '<h3>' + video.title + '</h3>' +
+                        '<p>XSTAR Stream • ' + video.views + ' • Today</p>' +
+                        '</div>' +
+                        '</div>';
+                    
+                    relatedFeed.appendChild(card);
+                }
+            }
+
+            var adDiv = document.createElement("div");
+            adDiv.className = "ad-box";
+            adDiv.innerHTML = '<script>var atOptions = {"key" : "b03c34460aa1ee378364d2365f0bf293", "format" : "iframe", "height" : 300, "width" : 160, "params" : {}};<\/script><script src="https://czernik.org/22/b03c34460aa1ee378364d2365f0bf293.js"><\/script>';
+            relatedFeed.appendChild(adDiv);
+        }
+
+        function goHome() {
+            videoElement.pause();
+            videoElement.src = "";
+
+            playerPage.classList.remove("active");
+            homePage.classList.add("active");
+            categoryBar.style.display = "flex";
+            
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        window.addEventListener("popstate", function(event) {
+            if (playerPage.classList.contains("active")) {
+                videoElement.pause();
+                videoElement.src = "";
+                playerPage.classList.remove("active");
+                homePage.classList.add("active");
+                categoryBar.style.display = "flex";
+            }
+        });
+
+        function toggleSideMenu() {
+            var menu = document.getElementById("sideMenu");
+            var backdrop = document.getElementById("backdrop");
+            if (menu.classList.contains("open")) {
+                menu.classList.remove("open");
+                backdrop.style.display = "none";
+            } else {
+                menu.classList.add("open");
+                backdrop.style.display = "block";
+            }
+        }
+
+        function toggleSearch() {
+            var sBox = document.getElementById("searchBox");
+            sBox.style.display = (sBox.style.display === "block") ? "none" : "block";
+            if(sBox.style.display === "block") {
+                document.getElementById("searchInput").focus();
+            }
+        }
+
+        function handleSearch(event) {
+            if(event.key === "Enter") {
+                var query = event.target.value;
+                showToast("Searching for: " + query);
+                toggleSearch();
+            }
+        }
+
+        function selectCat(elem, catName) {
+            var chips = document.querySelectorAll(".cat-chip");
+            for(var i = 0; i < chips.length; i++) {
+                chips[i].classList.remove("active");
+            }
+            elem.classList.add("active");
+            showToast(catName + " Filter Selected");
+        }
+
+        function showSearchHistory() {
+            showToast("Showing recent search history...");
+        }
+
+        function showWatchHistory() {
+            showToast("Showing watched videos history...");
+        }
+
+        function downloadApp() {
+            showToast("Downloading XSTAR Application package...");
+        }
+
+        function showToast(msg) {
+            var toast = document.getElementById("toast");
+            toast.innerText = msg;
+            toast.style.display = "block";
+            setTimeout(function() { toast.style.display = "none"; }, 2000);
+        }
+    </script>
+</body>
+</html>
